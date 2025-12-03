@@ -6,14 +6,22 @@ import { sendMessage, sendPhoto, formatWeatherMessage } from '@/lib/telegram';
 function recommendClothes(
   clothes: Clothes[],
   temp: number,
-  weatherCondition: string
+  weatherCondition: string,
+  userGender: string | null
 ) {
+  // 성별 필터: 사용자 성별과 일치하거나 unisex인 옷만 선택
+  const genderFilter = (c: Clothes) => {
+    if (!userGender || userGender === 'unisex') return true; // 성별 미설정 시 모든 옷 표시
+    return c.gender === userGender || c.gender === 'unisex' || c.gender === null;
+  };
+
   // 카테고리별 온도에 맞는 옷 필터링
   const getByCategory = (category: string) => {
     // 먼저 날씨 조건과 온도가 모두 맞는 옷 찾기
     let items = clothes.filter(
       (c) =>
         c.category === category &&
+        genderFilter(c) &&
         temp >= c.temperature_min &&
         temp <= c.temperature_max &&
         (c.weather_condition === null || c.weather_condition === weatherCondition)
@@ -24,6 +32,7 @@ function recommendClothes(
       items = clothes.filter(
         (c) =>
           c.category === category &&
+          genderFilter(c) &&
           temp >= c.temperature_min &&
           temp <= c.temperature_max &&
           c.weather_condition === null
@@ -154,8 +163,8 @@ export async function POST(request: NextRequest) {
         const weatherIcon = getWeatherIcon(weatherMain);
         const weatherCode = getWeatherCode(weatherMain);
 
-        // 2. 옷차림 추천
-        const recommended = recommendClothes(clothes, temp, weatherCode);
+        // 2. 옷차림 추천 (사용자 성별 기반)
+        const recommended = recommendClothes(clothes, temp, weatherCode, user.gender);
 
         // 3. 메시지 생성
         let message = formatWeatherMessage({

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 interface User {
   id: string;
   name: string;
+  gender: string | null;
   location_name: string | null;
   notification_time: string;
   telegram_chat_id: string | null;
@@ -31,6 +32,7 @@ export default function Dashboard() {
   const [message, setMessage] = useState("");
 
   // 설정 폼 상태
+  const [gender, setGender] = useState("");
   const [location, setLocation] = useState("");
   const [notificationTime, setNotificationTime] = useState("07:00");
 
@@ -45,6 +47,7 @@ export default function Dashboard() {
     try {
       const userData = JSON.parse(storedUser);
       setUser(userData);
+      setGender(userData.gender || "");
       setLocation(userData.location_name || "");
       setNotificationTime(userData.notification_time?.slice(0, 5) || "07:00");
 
@@ -61,6 +64,7 @@ export default function Dashboard() {
       if (response.ok) {
         const data = await response.json();
         setUser(data);
+        setGender(data.gender || "");
         setLocation(data.location_name || "");
         setNotificationTime(data.notification_time?.slice(0, 5) || "07:00");
         localStorage.setItem("user", JSON.stringify(data));
@@ -83,6 +87,7 @@ export default function Dashboard() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          gender: gender || null,
           location_name: location,
           notification_time: notificationTime + ":00",
         }),
@@ -312,6 +317,22 @@ export default function Dashboard() {
           </h2>
 
           <div className="space-y-4">
+            {/* Gender */}
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                성별
+              </label>
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="organic-select"
+              >
+                <option value="">성별을 선택하세요</option>
+                <option value="male">남성</option>
+                <option value="female">여성</option>
+              </select>
+            </div>
+
             {/* Location */}
             <div>
               <label className="block text-sm font-medium text-[var(--color-text)] mb-2">

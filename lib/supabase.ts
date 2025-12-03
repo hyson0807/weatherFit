@@ -10,6 +10,7 @@ export interface User {
   id: string;
   name: string;
   password?: string; // 해시된 비밀번호 (응답에서는 제외)
+  gender: string | null;
   telegram_chat_id: string | null;
   verification_code: string | null;
   location_name: string | null;
@@ -29,6 +30,7 @@ export interface Clothes {
   temperature_min: number;
   temperature_max: number;
   weather_condition: string | null;
+  gender: string | null;
   created_at: string;
 }
 

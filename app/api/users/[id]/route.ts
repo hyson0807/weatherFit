@@ -11,7 +11,7 @@ export async function GET(
 
     const { data, error } = await supabase
       .from('users')
-      .select('id, name, location_name, latitude, longitude, notification_time, telegram_chat_id, verification_code, is_active, created_at, updated_at')
+      .select('id, name, gender, location_name, latitude, longitude, notification_time, telegram_chat_id, verification_code, is_active, created_at, updated_at')
       .eq('id', id)
       .single();
 
@@ -42,7 +42,7 @@ export async function PATCH(
     const body = await request.json();
 
     // 수정 가능한 필드만 허용
-    const allowedFields = ['location_name', 'notification_time', 'is_active'];
+    const allowedFields = ['gender', 'location_name', 'notification_time', 'is_active'];
     const updateData: Record<string, unknown> = {};
 
     for (const field of allowedFields) {
@@ -73,7 +73,7 @@ export async function PATCH(
       .from('users')
       .update(updateData)
       .eq('id', id)
-      .select('id, name, location_name, latitude, longitude, notification_time, telegram_chat_id, verification_code, is_active, created_at, updated_at')
+      .select('id, name, gender, location_name, latitude, longitude, notification_time, telegram_chat_id, verification_code, is_active, created_at, updated_at')
       .single();
 
     if (error) {
