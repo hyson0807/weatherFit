@@ -39,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# MCP config (contains sensitive tokens)
+.mcp.json
+
+# Personal files (root directory only)
+/*.jpeg
+/*.jpg
+/*.png
+/*.pdf
